@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+      <link rel="stylesheet" href ="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+      <style>
+      body {
+        position: absolute;
+        left: 100px;
+        top: 100px;
+        font-size: 15pt;
+      }
+      </style>
+
+    </head>
+
+    <body ng-app ng-controller="nameController">
+
+      <form ng-submit = "nameAdd()">
+        Please enter first and last name:<br><br>
+        <input type = "text" ng-model = "first">First Name</input><br><br>
+        <input type = "text" ng-model = "last">Last Name</input><br><br>
+        <input type = "submit" value = "Add Name"></input>
+      </form>
+      <br>
+
+      <button ng-click="remove()">Delete From Registry</button>
+      <br>
+
+
+      <div ng-repeat = "x in nameRoster">
+        <input type = "checkbox" ng-model = "x.begone">
+        <span ng-bind = "x.nameInput"></span>
+      </div>
+      <br>
+
+      <button ng-click="removeAll()">Clear Registry</button>
+      <br>
+
+      <script>
+      function nameController ($scope, $http){
+        $scope.nameRoster = [{nameInput:"John Doe", begone:false}];
+        $scope.nameAdd = function(){
+          var data = {nameInput: $scope.first + " " + $scope.last, begone:false};
+          //pushes first and last name input into the nameRoster array & sets the property 'begone' to false
+          $scope.nameRoster.push(data);
+          $http.post("rosterData.json", data).error(function(){
+            alert("success!");
+          });
+          //This will blank the input boxes
+          $scope.first = "";
+          $scope.last = "";
+        };
+        $scope.remove = function(){
+          //Create variable named original and set it to current list for storage
+          var original = $scope.nameRoster;
+          //Empty the current list
+          $scope.nameRoster = [];
+          //restore all items on the list that weren't checked (!x.begone) using forEach loop
+          angular.forEach(original, function(x){
+            if (!x.begone) $scope.nameRoster.push(x);
+          });
+        };
+        $scope.removeAll = function(){
+          $scope.nameRoster = [];
+        };
+      }
+      </script>
+
+    </body>
+  </html>
