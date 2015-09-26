@@ -45,7 +45,7 @@
           //pushes first and last name input into the nameRoster array & sets the property 'begone' to false
           $scope.nameRoster.push(data);
           $http.post("rosterData.json", data).error(function(){
-            alert("success!");
+            console.log("success!");
           });
           $scope.first = "";
           $scope.last = "";
